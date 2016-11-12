@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="London, UK"
+                android:text="Kramat Sentiong, ID"
                 android:textColor="@color/cardview_light_background" />
         </LinearLayout>
 
@@ -55,8 +55,8 @@
 
             <ImageView
                 android:id="@+id/img_sunshine"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:src="@mipmap/ic_launcher" />
         </LinearLayout>
     </LinearLayout>
