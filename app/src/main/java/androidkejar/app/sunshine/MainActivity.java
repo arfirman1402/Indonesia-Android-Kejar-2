@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -93,7 +93,9 @@ public class MainActivity extends AppCompatActivity implements CloudResult {
         txtCelcius.setText(temperature);
 
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        String time = "Hari ini, "+gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH)+"-"+(gregorianCalendar.get(GregorianCalendar.MONTH)+1)+"-"+gregorianCalendar.get(GregorianCalendar.YEAR);
+        List<String> listDay = Arrays.asList(BaseApp.Dates.getListDay());
+        List<String> listMonth = Arrays.asList(BaseApp.Dates.getListMonth());
+        String time = listDay.get(gregorianCalendar.get(GregorianCalendar.DAY_OF_WEEK)-1)+", " + gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH) + " " + listMonth.get(gregorianCalendar.get(GregorianCalendar.MONTH)) + " " + gregorianCalendar.get(GregorianCalendar.YEAR);
         txtTime.setText(time);
 
         Glide.with(getApplicationContext())
