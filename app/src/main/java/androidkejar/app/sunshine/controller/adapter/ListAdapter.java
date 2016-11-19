@@ -1,5 +1,6 @@
 package androidkejar.app.sunshine.controller.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
@@ -22,27 +23,27 @@ import androidkejar.app.sunshine.R;
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListHolder> {
 
     Context context;
-    List<ItemObject.ListWeather> itemObjects;
+    List<ItemObject.ListWeather.ListOfWeather> itemObjects;
 
-    public ListAdapter(Context context, List<ItemObject.ListWeather> itemObjects) {
+    public ListAdapter(Context context, List<ItemObject.ListWeather.ListOfWeather> itemObjects) {
         this.context = context;
         this.itemObjects = itemObjects;
     }
 
     @Override
     public ListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_sunshine_item,null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_sunshine_item, null);
         return new ListHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ListHolder holder, int position) {
-        holder.txtDay.setText(itemObjects.get(position).getJudul());
+        holder.txtDay.setText(itemObjects.get(position).getWeather().get(0).getMain());
         holder.cardviewSunshineItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), DetailActivity.class);
-                intent.putExtra("judul",itemObjects.get(holder.getAdapterPosition()).getJudul());
+                intent.putExtra("judul", itemObjects.get(holder.getAdapterPosition()).getTemp().getDay() + "");
                 v.getContext().startActivity(intent);
             }
         });

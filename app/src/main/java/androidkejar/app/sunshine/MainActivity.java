@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -23,14 +22,14 @@ import androidkejar.app.sunshine.controller.CloudResult;
 import androidkejar.app.sunshine.controller.CloudURL;
 import androidkejar.app.sunshine.controller.adapter.ListAdapter;
 
-public class MainActivity extends AppCompatActivity implements CloudResult {
+public class MainActivity extends AppCompatActivity {
 
     CloudConnecting connecting;
     String url;
 
     RecyclerView lstSunshineItem;
     LinearLayoutManager linearLayoutManager;
-    List<ItemObject.ListWeather> itemObjects;
+    ItemObject.ListWeather listWeather;
     ListAdapter listAdapter;
 
     TextView txtTime;
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements CloudResult {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getData();
         getSupportActionBar().setElevation(0);
 
         txtTime = (TextView) findViewById(R.id.txt_time);
@@ -57,17 +55,8 @@ public class MainActivity extends AppCompatActivity implements CloudResult {
         lstSunshineItem = (RecyclerView) findViewById(R.id.lst_sunshine_item);
         lstSunshineItem.setLayoutManager(linearLayoutManager);
 
-        itemObjects = new ArrayList<>();
-        itemObjects.add(new ItemObject.ListWeather("Hari ini"));
-        itemObjects.add(new ItemObject.ListWeather("Besoknya"));
-        itemObjects.add(new ItemObject.ListWeather("Besoknya lagi"));
-        itemObjects.add(new ItemObject.ListWeather("Lusa kemaren"));
-        itemObjects.add(new ItemObject.ListWeather("Besoknya lusa"));
-        itemObjects.add(new ItemObject.ListWeather("Udah gak tahu hari apa"));
-
-        listAdapter = new ListAdapter(this, itemObjects);
-        lstSunshineItem.setAdapter(listAdapter);
-
+        getData();
+        getDataList();
     }
 
     private void getData() {
@@ -76,42 +65,80 @@ public class MainActivity extends AppCompatActivity implements CloudResult {
 
         Log.d("getData", "url = " + url);
 
-        connecting.getData(getApplicationContext(), url, this);
+        connecting.getData(getApplicationContext(), url, new CloudResult() {
+            @Override
+            public void resultData(String response) {
+                Log.d("resultData", response);
+
+                setCurrentWeather(response);
+            }
+
+            @Override
+            public void errorResultData(String errorResponse) {
+                Log.d("errorResultData", errorResponse);
+                Toast.makeText(getApplicationContext(), "Error Connection, check logcat for details.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
-    @Override
-    public void resultData(String response) {
-        Log.d("resultData", response);
-        /*Toast.makeText(getApplicationContext(), "Response = " + response, Toast.LENGTH_LONG).show();*/
+    private void getDataList() {
+        connecting = new CloudConnecting();
+        url = CloudURL.getListWeather();
+
+        Log.d("getData", "url = " + url);
+
+        connecting.getData(getApplicationContext(), url, new CloudResult() {
+            @Override
+            public void resultData(String response) {
+                Log.d("resultData", response);
+
+                setListWeather(response);
+            }
+
+            @Override
+            public void errorResultData(String errorResponse) {
+                Log.d("errorResultData", errorResponse);
+                Toast.makeText(getApplicationContext(), "Error Connection, check logcat for details.", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void setListWeather(String response) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+
+        listWeather = gson.fromJson(response, ItemObject.ListWeather.class);
+        listAdapter = new ListAdapter(getApplicationContext(), listWeather.getListOfWeathers());
+
+        lstSunshineItem.setAdapter(listAdapter);
+
+    }
+
+    private void setCurrentWeather(String response) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
         currentWeather = gson.fromJson(response, ItemObject.CurrentWeather.class);
 
         txtLocation.setText(currentWeather.getName());
 
-        String temperature = currentWeather.getMainTemperature().getTemp() + "\u2103";
+        double doubleTemp = currentWeather.getMainTemperature().getTemp();
+        int intTemp = (int) Math.round(doubleTemp);
+
+        String temperature = intTemp + " \u2103";
         txtCelcius.setText(temperature);
 
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
         List<String> listDay = Arrays.asList(BaseApp.Dates.getListDay());
         List<String> listMonth = Arrays.asList(BaseApp.Dates.getListMonth());
-        String time = listDay.get(gregorianCalendar.get(GregorianCalendar.DAY_OF_WEEK)-1)+", " + gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH) + " " + listMonth.get(gregorianCalendar.get(GregorianCalendar.MONTH)) + " " + gregorianCalendar.get(GregorianCalendar.YEAR);
+        String time = listDay.get(gregorianCalendar.get(GregorianCalendar.DAY_OF_WEEK) - 1) + ", " + gregorianCalendar.get(GregorianCalendar.DAY_OF_MONTH) + " " + listMonth.get(gregorianCalendar.get(GregorianCalendar.MONTH)) + " " + gregorianCalendar.get(GregorianCalendar.YEAR);
         txtTime.setText(time);
 
         Glide.with(getApplicationContext())
-                .load("http://openweathermap.org/img/w/" + currentWeather.getWeathers().get(0).getIcon() + ".png")
+                .load(CloudURL.getImageWeather(currentWeather.getWeathers().get(0).getIcon()))
                 .centerCrop()
                 .fitCenter()
-                .placeholder(R.mipmap.ic_launcher)
                 .crossFade()
                 .into(imgSunshine);
-
     }
 
-    @Override
-    public void errorResultData(String errorResponse) {
-        Log.d("errorResultData", errorResponse);
-        /*Toast.makeText(getApplicationContext(), "ErrorResponse = " + errorResponse, Toast.LENGTH_LONG).show();*/
-        Toast.makeText(getApplicationContext(), "Error Connection, check logcat for details.", Toast.LENGTH_LONG).show();
-    }
 }

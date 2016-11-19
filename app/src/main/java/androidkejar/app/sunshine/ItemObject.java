@@ -2,7 +2,6 @@ package androidkejar.app.sunshine;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,15 +9,91 @@ import java.util.List;
  */
 
 public class ItemObject {
-    public static class ListWeather {
-        private String judul;
 
-        public ListWeather(String judul) {
-            this.judul = judul;
+    public static class ListWeather {
+
+        @SerializedName("list")
+        private List<ListOfWeather> listOfWeathers;
+
+        public List<ListOfWeather> getListOfWeathers() {
+            return listOfWeathers;
         }
 
-        public String getJudul() {
-            return judul;
+        public class ListOfWeather {
+
+            @SerializedName("dt")
+            private int datetime;
+
+            @SerializedName("temp")
+            private Temperature temp;
+
+            public class Temperature {
+                @SerializedName("day")
+                private double day;
+
+                public double getDay() {
+                    return day;
+                }
+            }
+
+            @SerializedName("pressure")
+            private String pressure;
+
+            @SerializedName("humidity")
+            private String humidity;
+
+            @SerializedName("speed")
+            private String speed;
+
+            @SerializedName("weather")
+            private List<Weather> weather;
+
+            public class Weather {
+                @SerializedName("main")
+                private String main;
+
+                @SerializedName("description")
+                private String description;
+
+                @SerializedName("icon")
+                private String icon;
+
+                public String getMain() {
+                    return main;
+                }
+
+                public String getDescription() {
+                    return description;
+                }
+
+                public String getIcon() {
+                    return icon;
+                }
+            }
+
+            public int getDatetime() {
+                return datetime;
+            }
+
+            public Temperature getTemp() {
+                return temp;
+            }
+
+            public String getPressure() {
+                return pressure;
+            }
+
+            public String getHumidity() {
+                return humidity;
+            }
+
+            public String getSpeed() {
+                return speed;
+            }
+
+            public List<Weather> getWeather() {
+                return weather;
+            }
         }
     }
 
@@ -46,9 +121,9 @@ public class ItemObject {
 
         class MainTemperature {
             @SerializedName("temp")
-            private int temp;
+            private double temp;
 
-            public int getTemp() {
+            public double getTemp() {
                 return temp;
             }
         }
