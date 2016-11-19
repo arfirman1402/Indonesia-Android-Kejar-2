@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(this);
         lstSunshineItem = (RecyclerView) findViewById(R.id.lst_sunshine_item);
         lstSunshineItem.setLayoutManager(linearLayoutManager);
+        lstSunshineItem.setHasFixedSize(true);
 
         getData();
         getDataList();

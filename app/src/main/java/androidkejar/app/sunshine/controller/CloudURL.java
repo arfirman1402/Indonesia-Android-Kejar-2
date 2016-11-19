@@ -6,7 +6,7 @@ package androidkejar.app.sunshine.controller;
 
 public class CloudURL {
     private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/";
-    private static final String CURRENT_LOCATION = "Pekanbaru";
+    private static final String CURRENT_LOCATION = "Jakarta";
     private static final String API_KEY = "a1da57e96e1d31099ae46599fe4e6687";
     private static final String UNITS_METRIC = "metric";
     private static final String DATA_FORMAT = "json";
