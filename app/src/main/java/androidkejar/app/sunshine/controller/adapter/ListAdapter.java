@@ -12,10 +12,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import androidkejar.app.sunshine.BaseApp;
 import androidkejar.app.sunshine.DetailActivity;
 import androidkejar.app.sunshine.ItemObject;
 import androidkejar.app.sunshine.R;
@@ -47,9 +49,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListHolder> {
         long dateTimeSeconds = dateTime * 1000;
         Calendar calDateTime = GregorianCalendar.getInstance();
         calDateTime.setTimeInMillis(dateTimeSeconds);
-        String strDateTime = calDateTime.get(GregorianCalendar.DAY_OF_MONTH) + " - " + (calDateTime.get(GregorianCalendar.MONTH) + 1) + " - " + calDateTime.get(GregorianCalendar.YEAR);
-        /*holder.txtDay.setText(itemObjects.get(position).getWeather().get(0).getMain());*/
-        holder.txtDay.setText((strDateTime) + "");
+        List<String> listDay = Arrays.asList(BaseApp.Dates.getListDay());
+        List<String> listMonth = Arrays.asList(BaseApp.Dates.getListMonth());
+        String strDateTime = listDay.get(calDateTime.get(GregorianCalendar.DAY_OF_WEEK) - 1) + ", " + calDateTime.get(GregorianCalendar.DAY_OF_MONTH) + " " + listMonth.get(calDateTime.get(GregorianCalendar.MONTH)) + " " + calDateTime.get(GregorianCalendar.YEAR);
+        holder.txtDay.setText((strDateTime));
         holder.txtStatus.setText(itemObjects.get(position).getWeather().get(0).getDescription());
         holder.txtCelciusItem.setText((int) Math.round(itemObjects.get(position).getTemp().getDay()) + " \u2103");
         Glide.with(context)
